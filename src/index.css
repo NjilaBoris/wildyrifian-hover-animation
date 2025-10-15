@@ -55,20 +55,20 @@ nav {
     align-items: center;
 }
 
-.folders {
-    width: 100%;
-    height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    overflow: hidden;
-}
+/*.folders {*/
+/*    width: 100%;*/
+/*    height: 100svh;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: flex-end;*/
+/*    overflow: hidden;*/
+/*}*/
 
-.row {
-    position: relative;
-    width: 100%;
-    display: flex;
-}
+/*.row {*/
+/*    position: relative;*/
+/*    width: 100%;*/
+/*    display: flex;*/
+/*}*/
 
 .folder {
     position: relative;

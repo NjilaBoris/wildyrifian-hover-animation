@@ -1,66 +1,155 @@
-import React from 'react'
-import Folder from './components/Folder'
+import React, {useRef} from 'react'
+import {useGSAP} from "@gsap/react";
+import gsap from "gsap";
 
 const App = () => {
-  return (
-    <>
-      <nav className="absolute top-0 w-full p-8 flex justify-between items-center">
-        <p className="uppercase text-[0.8rem] font-medium leading-none">Design Ledger</p>
-        <p className="uppercase text-[0.8rem] font-medium leading-none">Experiment 0492</p>
-      </nav>
+    const containerRef = useRef(null)
+    useGSAP(() => {
+        const folders = document.querySelectorAll(".folder");
+        const folderWrappers = document.querySelectorAll(".folder-wrapper");
+        let isMobile = window.innerWidth < 1000;
+        folders.forEach((folder, index) => {
+            const previewImages = folder.querySelectorAll(".folder-preview-img");
+            folder.addEventListener("mouseenter", () => {
+                if (isMobile) return;
+                folders.forEach((siblingFolder) => {
+                    if (siblingFolder !== folder) {
+                        siblingFolder.classList.add("disabled");
+                    }
+                });
+                gsap.to(folderWrappers[index], {
+                    y: 0, duration: 0.25, ease: "back.out(1.7)",
+                });
+                previewImages.forEach((img, imgIndex) => {
 
-      <div className="w-full h-[100svh] flex flex-col justify-end overflow-hidden">
-        {/* Row 1 */}
-        <div className="relative w-full flex -bottom-[13rem] md:bottom-0 md:flex-col">
-          <Folder
-            variant="variant-1"
-            index="01"
-            title="figures"
-            images={["/img-1.jpg", "/img-2.jpg", "/img-3.jpg"]}
-          />
-          <Folder
-            variant="variant-2"
-            index="02"
-            title="persona"
-            images={["/img-4.jpg", "/img-5.jpg", "/img-6.jpg"]}
-          />
+                    let rotation;
+                    if (imgIndex === 0) {
+                        rotation = gsap.utils.random(-20, -10);
+                    } else if (imgIndex === 1) {
+                        rotation = gsap.utils.random(-10, 10);
+                    } else {
+                        rotation = gsap.utils.random(10, 20);
+                    }
+
+                    gsap.to(img, {
+                        y: "-100%", rotation: rotation, duration: 0.25, ease: "back.out(1.7)", delay: imgIndex * 0.025,
+                    });
+                });
+
+            })
+            folder.addEventListener("mouseleave", () => {
+                if (isMobile) return;
+
+                folders.forEach((siblingFolder) => {
+                    siblingFolder.classList.remove("disabled");
+                });
+
+                gsap.to(folderWrappers[index], {
+                    y: 25, duration: 0.25, ease: "back.out(1.7)",
+                });
+
+                previewImages.forEach((img, imgIndex) => {
+                    gsap.to(img, {
+                        y: "0%", rotation: 0, duration: 0.25, ease: "back.out(1.7)", delay: imgIndex * 0.05,
+                    });
+                });
+            });
+
+        })
+        window.addEventListener("resize", () => {
+            const currentBreakpoint = window.innerWidth < 1000;
+            if (currentBreakpoint !== isMobile) {
+                isMobile = currentBreakpoint;
+                gsap.set(folderWrappers, {y: isMobile ? 0 : 25});
+
+                folders.forEach((folder) => {
+                    folder.classList.remove("disabled");
+                });
+                const allPreviewImages = document.querySelectorAll(".folder-preview-img");
+                gsap.set(allPreviewImages, {y: "0%", rotation: 0});
+            }
+        });
+    }, {scope: containerRef})
+    return (<>
+        <nav>
+            <p>Design Ledger</p>
+            <p>Experiment 0492</p>
+        </nav>
+        <div ref={containerRef} className="folders w-full h-svh flex flex-col justify-end overflow-clip">
+            <div className="row relative w-full flex">
+                <div className="folder variant-1">
+                    <div className="folder-preview">
+                        <div className="folder-preview-img"><img src="/img-1.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-2.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-3.jpg"/></div>
+                    </div>
+                    <div className="folder-wrapper">
+                        <div className="folder-index"><p>01</p></div>
+                        <div className="folder-name"><h1>figures</h1></div>
+                    </div>
+                </div>
+                <div className="folder variant-2">
+                    <div className="folder-preview">
+                        <div className="folder-preview-img"><img src="/img-4.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-5.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-6.jpg"/></div>
+                    </div>
+                    <div className="folder-wrapper">
+                        <div className="folder-index"><p>02</p></div>
+                        <div className="folder-name"><h1>persona</h1></div>
+                    </div>
+                </div>
+            </div>
+            <div className="row relative w-full flex">
+                <div className="folder variant-2">
+                    <div className="folder-preview">
+                        <div className="folder-preview-img"><img src="/img-7.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-8.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-9.jpg"/></div>
+                    </div>
+                    <div className="folder-wrapper">
+                        <div className="folder-index"><p>03</p></div>
+                        <div className="folder-name"><h1>form</h1></div>
+                    </div>
+                </div>
+                <div className="folder variant-3">
+                    <div className="folder-preview">
+                        <div className="folder-preview-img"><img src="/img-10.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-11.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-12.jpg"/></div>
+                    </div>
+                    <div className="folder-wrapper">
+                        <div className="folder-index"><p>04</p></div>
+                        <div className="folder-name"><h1>chromatic</h1></div>
+                    </div>
+                </div>
+            </div>
+            <div className="row relative w-full flex">
+                <div className="folder variant-1">
+                    <div className="folder-preview">
+                        <div className="folder-preview-img"><img src="/img-13.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-14.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-15.jpg"/></div>
+                    </div>
+                    <div className="folder-wrapper">
+                        <div className="folder-index"><p>05</p></div>
+                        <div className="folder-name"><h1>mythos</h1></div>
+                    </div>
+                </div>
+                <div className="folder variant-2">
+                    <div className="folder-preview">
+                        <div className="folder-preview-img"><img src="/img-16.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-17.jpg"/></div>
+                        <div className="folder-preview-img"><img src="/img-18.jpg"/></div>
+                    </div>
+                    <div className="folder-wrapper">
+                        <div className="folder-index"><p>06</p></div>
+                        <div className="folder-name"><h1>kinetics</h1></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {/* Row 2 */}
-        <div className="relative w-full flex -bottom-[7.5rem] md:bottom-0 md:flex-col">
-          <Folder
-            className="flex-[2]"
-            variant="variant-2"
-            index="03"
-            title="form"
-            images={["/img-7.jpg", "/img-8.jpg", "/img-9.jpg"]}
-          />
-          <Folder
-            className="flex-[3]"
-            variant="variant-3"
-            index="04"
-            title="chromatic"
-            images={["/img-10.jpg", "/img-11.jpg", "/img-12.jpg"]}
-          />
-        </div>
-
-        {/* Row 3 */}
-        <div className="relative w-full flex -bottom-[2rem] md:bottom-0 md:flex-col">
-          <Folder
-            variant="variant-1"
-            index="05"
-            title="mythos"
-            images={["/img-13.jpg", "/img-14.jpg", "/img-15.jpg"]}
-          />
-          <Folder
-            variant="variant-2"
-            index="06"
-            title="kinetics"
-            images={["/img-16.jpg", "/img-17.jpg", "/img-18.jpg"]}
-          />
-        </div>
-      </div>
-    </>
-  )
+    </>)
 }
 export default App
